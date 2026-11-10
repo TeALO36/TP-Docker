@@ -1,0 +1,21 @@
+<%- include('partials/head', { title: 'Créer un compte' }) %>
+
+<main class="page narrow">
+  <div class="panel auth-panel">
+    <h1>Créer un compte</h1>
+    <p class="muted">Un compte suffit pour sauvegarder tes scores et tes records.</p>
+    <form method="post" action="/inscription" class="form">
+      <label for="pseudo">Pseudo</label>
+      <input id="pseudo" name="pseudo" required minlength="3" maxlength="16" pattern="[A-Za-z0-9_-]{3,16}" autocomplete="username">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" name="email" required maxlength="255" autocomplete="email">
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" name="password" required minlength="8" maxlength="72" autocomplete="new-password">
+      <p class="muted small">8 caractères minimum. L'e-mail sert à te reconnecter, aucun envoi n'est fait.</p>
+      <button class="btn" type="submit">Créer mon compte</button>
+    </form>
+    <p class="muted">Déjà inscrit ? <a class="link" href="/connexion">Se connecter</a></p>
+  </div>
+</main>
+
+<%- include('partials/foot') %>

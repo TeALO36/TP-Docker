@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · <%= appName %></title>
+  <meta name="description" content="Pookie, portail de mini-jeux avec sauvegarde de progression en base de données.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-game="<%= typeof game !== 'undefined' && game ? game.slug : '' %>" data-best="<%= typeof bestScore !== 'undefined' ? bestScore : 0 %>" data-logged="<%= user ? '1' : '0' %>">
+<%- include('header') %>
