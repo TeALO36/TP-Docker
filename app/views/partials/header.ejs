@@ -1,0 +1,29 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">P</span>
+      <span class="brand-text">Pookie<small>mini-jeux</small></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">Jeux</a>
+      <a href="/classement" class="<%= currentPath.startsWith('/classement') ? 'active' : '' %>">Classement</a>
+      <% if (user) { %>
+        <a href="/profil" class="<%= currentPath.startsWith('/profil') ? 'active' : '' %>">Profil</a>
+      <% } %>
+    </nav>
+    <div class="topbar-actions">
+      <% if (user) { %>
+        <span class="user-chip">👤 <%= user.pseudo %></span>
+        <form method="post" action="/deconnexion">
+          <button class="btn ghost small" type="submit">Déconnexion</button>
+        </form>
+      <% } else { %>
+        <a class="btn ghost small" href="/connexion">Connexion</a>
+        <a class="btn small" href="/inscription">Créer un compte</a>
+      <% } %>
+    </div>
+  </div>
+</header>
+<% if (typeof flash !== 'undefined' && flash) { %>
+  <div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>
