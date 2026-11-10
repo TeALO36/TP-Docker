@@ -1,0 +1,74 @@
+<%- include('partials/head', { title: 'Ma progression' }) %>
+
+<main class="page">
+  <h1 class="page-title">Ma progression</h1>
+
+  <section class="panel profile-head">
+    <div>
+      <p class="eyebrow">Compte</p>
+      <p class="hero-pseudo"><%= user.pseudo %></p>
+      <p class="muted"><%= user.email %> · inscrit le <%= new Date(user.created_at).toLocaleDateString('fr-FR') %></p>
+    </div>
+    <div class="level">
+      <p class="eyebrow">Niveau <strong><%= level %></strong></p>
+      <div class="level-bar" role="progressbar" aria-valuenow="<%= levelProgress %>" aria-valuemin="0" aria-valuemax="100">
+        <span class="level-fill" style="width: <%= levelProgress %>%"></span>
+      </div>
+      <p class="muted small"><%= stats.points %> points au total · 500 points par niveau</p>
+    </div>
+  </section>
+
+  <section class="stats-grid">
+    <div class="panel stat"><p class="stat-label">Points</p><p class="stat-value"><%= stats.points %></p></div>
+    <div class="panel stat"><p class="stat-label">Parties jouées</p><p class="stat-value"><%= stats.parties %></p></div>
+    <div class="panel stat"><p class="stat-label">Temps de jeu</p><p class="stat-value"><%= Math.round(stats.secondes / 60) %> min</p></div>
+    <div class="panel stat"><p class="stat-label">Jeux commencés</p><p class="stat-value"><%= progress.length %></p></div>
+  </section>
+
+  <section class="panel">
+    <h2>Progression par jeu</h2>
+    <% if (progress.length === 0) { %>
+      <p class="muted">Aucune partie enregistrée. <a class="link" href="/#jeux">Choisis un jeu</a> pour commencer.</p>
+    <% } else { %>
+      <table class="table">
+        <thead>
+          <tr><th>Jeu</th><th class="right">Record</th><th class="right">Parties</th><th class="right">Temps</th><th class="right">Dernière partie</th></tr>
+        </thead>
+        <tbody>
+          <% progress.forEach((row) => { %>
+            <tr>
+              <td><a class="link" href="/jeu/<%= row.game_slug %>"><%= row.emoji %> <%= row.title %></a></td>
+              <td class="right"><strong><%= row.best_score %></strong></td>
+              <td class="right"><%= row.games_played %></td>
+              <td class="right"><%= Math.round(row.total_seconds / 60) %> min</td>
+              <td class="right"><%= new Date(row.last_played_at).toLocaleDateString('fr-FR') %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </section>
+
+  <section class="panel">
+    <h2>Dernières parties</h2>
+    <% if (scores.length === 0) { %>
+      <p class="muted">Rien à afficher pour l'instant.</p>
+    <% } else { %>
+      <table class="table">
+        <thead><tr><th>Jeu</th><th class="right">Score</th><th class="right">Durée</th><th class="right">Date</th></tr></thead>
+        <tbody>
+          <% scores.forEach((row) => { %>
+            <tr>
+              <td><%= row.emoji %> <%= row.title %></td>
+              <td class="right"><%= row.score %></td>
+              <td class="right"><%= row.duration_seconds %> s</td>
+              <td class="right"><%= new Date(row.created_at).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </section>
+</main>
+
+<%- include('partials/foot') %>

@@ -1,0 +1,53 @@
+<%- include('partials/head', { title: 'Classements' }) %>
+
+<main class="page">
+  <h1 class="page-title">Classements</h1>
+  <p class="muted">Meilleur score par joueur et par jeu. Les classements sont servis depuis le cache Redis (30 s).</p>
+
+  <section class="panel">
+    <h2>Général</h2>
+    <% if (global.length === 0) { %>
+      <p class="muted">Aucun joueur classé pour le moment.</p>
+    <% } else { %>
+      <table class="table">
+        <thead><tr><th>#</th><th>Joueur</th><th>Parties</th><th class="right">Points</th></tr></thead>
+        <tbody>
+          <% global.forEach((row, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= row.pseudo %></td>
+              <td><%= row.parties %></td>
+              <td class="right"><%= row.points %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </section>
+
+  <div class="boards">
+    <% boards.forEach(({ game, rows }) => { %>
+      <section class="panel">
+        <h2><span class="mini-emoji" aria-hidden="true"><%= game.emoji %></span> <%= game.title %></h2>
+        <% if (rows.length === 0) { %>
+          <p class="muted">Pas encore de score. <a class="link" href="/jeu/<%= game.slug %>">Jouer maintenant</a></p>
+        <% } else { %>
+          <table class="table">
+            <thead><tr><th>#</th><th>Joueur</th><th class="right">Record</th></tr></thead>
+            <tbody>
+              <% rows.forEach((row, i) => { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= row.pseudo %></td>
+                  <td class="right"><%= row.score %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } %>
+      </section>
+    <% }) %>
+  </div>
+</main>
+
+<%- include('partials/foot') %>

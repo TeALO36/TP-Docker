@@ -1,0 +1,73 @@
+<%- include('partials/head', { title: game.title }) %>
+
+<main class="page">
+  <div class="game-head">
+    <a class="link" href="/#jeux">← Tous les jeux</a>
+    <div class="game-title">
+      <span class="game-badge <%= game.gradient %>" aria-hidden="true"><%= game.emoji %></span>
+      <div>
+        <h1><%= game.title %></h1>
+        <p class="muted"><%= game.category %> · <%= game.description %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-layout">
+    <section class="panel game-stage">
+      <div class="hud">
+        <span class="hud-item">Score <strong id="hud-score">0</strong></span>
+        <span class="hud-item">Record <strong id="hud-best"><%= bestScore %></strong></span>
+        <button id="hud-restart" class="btn small ghost" type="button">Rejouer</button>
+      </div>
+      <p id="hud-status" class="hud-status" role="status" aria-live="polite"></p>
+
+      <% if (game.slug === 'memory') { %>
+        <div id="memory-board" class="memory-board"></div>
+      <% } else { %>
+        <canvas id="game-canvas" width="720" height="480" class="game-canvas"></canvas>
+      <% } %>
+
+      <p class="game-help"><%= game.how_to %></p>
+    </section>
+
+    <aside class="game-side">
+      <div class="panel">
+        <h2>Ta progression</h2>
+        <% if (mine) { %>
+          <dl class="stats">
+            <div><dt>Record</dt><dd><%= mine.best_score %> pts</dd></div>
+            <div><dt>Parties</dt><dd><%= mine.games_played %></dd></div>
+            <div><dt>Temps de jeu</dt><dd><%= Math.round(mine.total_seconds / 60) %> min</dd></div>
+          </dl>
+        <% } else if (user) { %>
+          <p class="muted">Aucune partie enregistrée sur ce jeu. Termine une partie pour sauvegarder ton premier score.</p>
+        <% } else { %>
+          <p class="muted">Tu joues en invité : le score ne sera pas sauvegardé.</p>
+          <a class="btn small" href="/connexion">Se connecter</a>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <h2>Top 5</h2>
+        <% if (top.length === 0) { %>
+          <p class="muted">Personne n'a encore marqué de points.</p>
+        <% } else { %>
+          <ol class="rank-list">
+            <% top.forEach((row, i) => { %>
+              <li>
+                <span class="rank"><%= i + 1 %></span>
+                <span class="rank-name"><%= row.pseudo %></span>
+                <span class="rank-score"><%= row.score %> pts</span>
+              </li>
+            <% }) %>
+          </ol>
+        <% } %>
+        <a class="link" href="/classement">Classement complet →</a>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script src="/js/app.js"></script>
+<script src="/js/games/<%= game.slug %>.js"></script>
+<%- include('partials/foot') %>

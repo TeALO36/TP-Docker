@@ -1,0 +1,18 @@
+<%- include('partials/head', { title: 'Connexion' }) %>
+
+<main class="page narrow">
+  <div class="panel auth-panel">
+    <h1>Connexion</h1>
+    <p class="muted">Retrouve ta progression sauvegardée en base.</p>
+    <form method="post" action="/connexion" class="form">
+      <label for="identifier">Pseudo ou e-mail</label>
+      <input id="identifier" name="identifier" required maxlength="255" autocomplete="username">
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" name="password" required minlength="8" autocomplete="current-password">
+      <button class="btn" type="submit">Se connecter</button>
+    </form>
+    <p class="muted">Pas encore de compte ? <a class="link" href="/inscription">Créer un compte</a></p>
+  </div>
+</main>
+
+<%- include('partials/foot') %>

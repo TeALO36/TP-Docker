@@ -1,0 +1,100 @@
+<%- include('partials/head', { title: 'Mini-jeux en ligne' }) %>
+
+<main class="page">
+  <section class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Portail de mini-jeux</p>
+      <h1>Joue, progresse,<br><span class="grad-text">bats ton record.</span></h1>
+      <p class="lead">Quatre jeux jouables directement dans le navigateur. Tes scores, records et parties sont sauvegardés en base de données — pas dans un cookie.</p>
+      <div class="hero-actions">
+        <% if (user) { %>
+          <a class="btn" href="#jeux">Choisir un jeu</a>
+          <a class="btn ghost" href="/profil">Ma progression</a>
+        <% } else { %>
+          <a class="btn" href="/inscription">Créer un compte</a>
+          <a class="btn ghost" href="/connexion">J'ai déjà un compte</a>
+        <% } %>
+      </div>
+    </div>
+    <aside class="hero-card panel">
+      <% if (user) { %>
+        <p class="eyebrow">Ton profil</p>
+        <p class="hero-pseudo"><%= user.pseudo %></p>
+        <p class="muted"><%= Object.keys(progressByGame).length %> jeu(x) commencé(s)</p>
+        <a class="btn ghost small" href="/profil">Voir mes stats</a>
+      <% } else { %>
+        <p class="eyebrow">Mode invité</p>
+        <p class="hero-pseudo">Sans compte</p>
+        <p class="muted">Tu peux jouer librement, mais impossible de sauvegarder ton score ou ton record.</p>
+        <a class="btn small" href="/inscription">Sauvegarder ma progression</a>
+      <% } %>
+    </aside>
+  </section>
+
+  <section id="jeux" class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <h2>Les jeux</h2>
+        <p class="muted"><%= games.length %> jeu(x) affiché(s) · clavier et souris · aucune installation</p>
+      </div>
+      <form class="search" method="get" action="/" role="search">
+        <input type="search" id="q" name="q" value="<%= q %>" maxlength="60"
+               placeholder="Rechercher un jeu…" aria-label="Rechercher un jeu" autocomplete="off">
+        <button class="btn small" type="submit">Chercher</button>
+        <% if (q) { %><a class="link small" href="/">Tout afficher</a><% } %>
+      </form>
+    </div>
+    <% if (games.length === 0) { %>
+      <div class="panel empty-state">
+        <p><strong>Aucun jeu ne correspond à « <%= q %> ».</strong></p>
+        <p class="muted">Essaie « serpent », « arcade » ou « mémoire »… ou <a class="link" href="/">affiche tous les jeux</a>.</p>
+      </div>
+    <% } else { %>
+    <div class="games-grid">
+      <% games.forEach((game) => { const mine = progressByGame[game.slug]; %>
+        <a class="game-card <%= game.gradient %>" href="/jeu/<%= game.slug %>">
+          <span class="game-emoji" aria-hidden="true"><%= game.emoji %></span>
+          <span class="game-category"><%= game.category %></span>
+          <h3><%= game.title %></h3>
+          <p><%= game.description %></p>
+          <span class="game-foot">
+            <% if (mine) { %>Ton record : <strong><%= mine.best_score %> pts</strong><% } else { %>Jouer<% } %>
+            <span class="arrow" aria-hidden="true">→</span>
+          </span>
+        </a>
+      <% }) %>
+    </div>
+    <% } %>
+  </section>
+
+  <section class="section split">
+    <div class="panel">
+      <h2>Classement général</h2>
+      <% if (top.length === 0) { %>
+        <p class="muted">Aucun score pour l'instant. À toi d'ouvrir le bal !</p>
+      <% } else { %>
+        <ol class="rank-list">
+          <% top.forEach((row, i) => { %>
+            <li>
+              <span class="rank"><%= i + 1 %></span>
+              <span class="rank-name"><%= row.pseudo %></span>
+              <span class="rank-score"><%= row.points %> pts</span>
+            </li>
+          <% }) %>
+        </ol>
+      <% } %>
+      <a class="link" href="/classement">Tous les classements →</a>
+    </div>
+    <div class="panel">
+      <h2>Comment ça marche ?</h2>
+      <ol class="steps">
+        <li>Crée un compte : le mot de passe est haché avec bcrypt, la session stockée dans Redis.</li>
+        <li>Joue : à la fin de chaque partie, le navigateur envoie le score à l'API.</li>
+        <li>L'API écrit le score <em>et</em> met à jour ta progression dans une même transaction PostgreSQL.</li>
+        <li>La recherche filtre les jeux par titre, catégorie ou description, sans tenir compte des accents.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/foot') %>
